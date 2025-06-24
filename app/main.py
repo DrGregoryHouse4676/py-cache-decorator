@@ -2,26 +2,16 @@ from typing import Callable, Any
 
 
 def cache(func: Callable) -> Callable:
-    saved_args = []
-    saved_results = []
+    saved_results = {}
 
     def wrapper(*args: Any) -> Any:
-        for i in range(len(saved_args)):
-            if args == saved_args[i]:
-                print("Getting from cache")
-                return saved_results[i]
+        if args in saved_results:
+            print("Getting from cache")
+            return saved_results[args]
 
         result = func(*args)
         print("Calculating new result")
-        saved_args.append(args)
-        saved_results.append(result)
+        saved_results[args] = result
         return result
 
     return wrapper
-
-
-@cache
-def delay_addition(num1: int, num2: int) -> int:
-    import time
-    time.sleep(3)
-    return num1 + num2
